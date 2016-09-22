@@ -1,0 +1,61 @@
+{
+  "name": "mongoose-schema-to-graphql",
+  "version": "2.2.1",
+  "description": "Auto types generator for graphQL schema, based on your existed Mongoose schema. Check GitHub for description.",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel src --presets babel-preset-es2015 --out-dir lib",
+    "prepublish": "npm run build"
+  },
+  "keywords": [
+    "mongo",
+    "mongoose",
+    "Mongoose",
+    "mongoose schema",
+    "mongoose graphql",
+    "mongoose-schema to graphQL",
+    "mongoose schema to graphQL",
+    "mongoDb",
+    "mongodb",
+    "graphQL",
+    "graphql",
+    "schema",
+    "GrpahQL",
+    "MongoDb",
+    "schema generator",
+    "auto schema",
+    "GQL",
+    "jsx",
+    "react",
+    "React",
+    "Meteor",
+    "Angular",
+    "Angular2",
+    "meteor",
+    "angular",
+    "angular2"
+  ],
+  "author": {
+    "name": "Sarkis Arutiunian (sarkis.tlt@gmail.com)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sarkistlt/mongoose-schema-to-graphql.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sarkistlt/mongoose-schema-to-graphql/issues"
+  },
+  "homepage": "https://github.com/sarkistlt/mongoose-schema-to-graphql#readme",
+  "license": "MIT",
+  "dependencies": {
+    "graphql": "^0.6.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-preset-stage-1": "^6.13.0"
+  },
+  "readme": "README.md"
+}
