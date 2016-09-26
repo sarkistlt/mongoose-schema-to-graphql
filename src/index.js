@@ -10,6 +10,7 @@ import {
     GraphQLInt,
     GraphQLFloat
 } from 'graphql';
+import shortid from 'shortid';
 
 let mapToObject = (mainObj, prop, instance) => {
     switch (instance) {
@@ -85,7 +86,7 @@ let MTGQL = (args) => {
             if (newSchemaObject.hasOwnProperty(key)) {
                 if (!newSchemaObject[key].hasOwnProperty('instance')) {
                     let subArgs = {
-                        name: `${key}SubType`,
+                        name: `${key}SubType_${shortid.generate()}`,
                         description: `sub-object type for ${key}`,
                         class: 'GraphQLObjectType',
                         schema: {paths: newSchemaObject[key]},
@@ -94,7 +95,7 @@ let MTGQL = (args) => {
                     GQLS.fields[key] = {type: MTGQL(subArgs)};
                 } else if (newSchemaObject[key].schema) {
                     let subArgs = {
-                            name: `${newSchemaObject[key].path}SubType`,
+                            name: `${newSchemaObject[key].path}SubType_${shortid.generate()}`,
                             description: `sub-object type for ${args.name}`,
                             class: 'GraphQLObjectType',
                             schema: newSchemaObject[key].schema,
