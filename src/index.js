@@ -10,7 +10,15 @@ import {
     GraphQLInt,
     GraphQLFloat
 } from 'graphql';
-import shortid from 'shortid';
+
+let randomName = (len) => {
+    let text = '',
+        possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < len; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+};
 
 let mapToObject = (mainObj, prop, instance) => {
     switch (instance) {
@@ -86,7 +94,7 @@ let MTGQL = (args) => {
             if (newSchemaObject.hasOwnProperty(key)) {
                 if (!newSchemaObject[key].hasOwnProperty('instance')) {
                     let subArgs = {
-                        name: `${key}SubType_${shortid.generate()}`,
+                        name: `${key}SubType_${randomName(10)}`,
                         description: `sub-object type for ${key}`,
                         class: 'GraphQLObjectType',
                         schema: {paths: newSchemaObject[key]},
@@ -95,7 +103,7 @@ let MTGQL = (args) => {
                     GQLS.fields[key] = {type: MTGQL(subArgs)};
                 } else if (newSchemaObject[key].schema) {
                     let subArgs = {
-                            name: `${newSchemaObject[key].path}SubType_${shortid.generate()}`,
+                            name: `${newSchemaObject[key].path}SubType_${randomName(10)}`,
                             description: `sub-object type for ${args.name}`,
                             class: 'GraphQLObjectType',
                             schema: newSchemaObject[key].schema,
