@@ -2,7 +2,7 @@
 #### Full support of all graphQL "Definitions" and "Scalars" besides "GraphQLFloat", because in Mongoose schema you can use only int. numbers. But you can use ```props``` property to pass it, details below. 
 
 This package will help you  avoid typing schemas for same essence.
-If you already have Mongoose schema that's enough to generate graphQL schema.
+If you already have Mongoose schema that's enough to generate graphQL type.
 
 ###How it works.
 First:
