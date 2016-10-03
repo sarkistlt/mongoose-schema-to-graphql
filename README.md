@@ -174,7 +174,7 @@ export let customerType = new GraphQLObjectType({
 ~~~
 
 ###```props``` property in config object.
-You can use this field to pass some additional props. to graphQL schema, for example:
+You can use this field to pass some additional props. to graphQL type, for example:
 ~~~js
 import {GraphQLFloat} from 'graphql';
 import MTGQL from 'mongoose-schema-to-graphql';
