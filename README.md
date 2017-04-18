@@ -1,5 +1,5 @@
 ## Use your existed Mongoose schema to generate graphQL types.
-#### Full support of all graphQL "Definitions" and "Scalars" besides "GraphQLFloat", because in Mongoose schema you can use only int. numbers. But you can use ```props``` property to pass it, details below. 
+#### Full support of all graphQL "Definitions" and "Scalars" besides "GraphQLFloat", because in Mongoose schema you can use only int. numbers. But you can use ```extend``` property to pass it, details below. 
 
 This package will help you  avoid typing schemas for same essence.
 If you already have Mongoose schema that's enough to generate graphQL type.
@@ -7,24 +7,31 @@ If you already have Mongoose schema that's enough to generate graphQL type.
 ###How it works.
 First:
 ~~~shell
-npm i --save mongoose-schema-to-graphql
+npm i -S mongoose-schema-to-graphql
 ~~~
+
+or
+
+~~~shell
+yarn add mongoose-schema-to-graphql
+~~~
+
 Make sure that your ```graphql``` package is the same version as used in ```mongoose-schema-to-graphql``` or vice versa.
 
 Then:
 ~~~js
-import MTGQL from 'mongoose-schema-to-graphql';
+import createType from 'mongoose-schema-to-graphql';
 ~~~
 
-MTGQL function accept obj as argument with following structure:
+`createType` function accept obj as argument with following structure:
 ~~~js
-let configs = {
+const config = {
               name: 'couponType', //graphQL type's name
               description: 'Coupon base schema', //graphQL type's description
               class: 'GraphQLObjectType', //"definitions" class name
               schema: couponSchema, //your Mongoose schema "let couponSchema = mongoose.Schema({...})"
               exclude: ['_id'], //fields which you want to exclude from mongoose schema
-              props: {
+              extend: {
                 price: {type: GraphQLFloat}
               } //add custom properties or overwrite existed
           }
@@ -34,7 +41,7 @@ After you declared config. object you're ready to go. Examples below:
 ~~~js
 dbSchemas.js
 
-export let couponSchema = mongoose.Schema({
+export const couponSchema = mongoose.Schema({
     couponCode: Array,
     description: String,
     discountType: String,
@@ -52,27 +59,26 @@ export let couponSchema = mongoose.Schema({
 ~~~
 
 ~~~js
-import MTGQL from 'mongoose-schema-to-graphql';
-import {couponSchema} from './dbSchemas';
+import createType from 'mongoose-schema-to-graphql';
+import { couponSchema } from './dbSchemas';
 
-let configs = {
-              name: 'couponType',
-              description: 'Coupon schema',
-              class: 'GraphQLObjectType',
-              schema: couponSchema,
-              exclude: ['_id']
-          }
+const config = {
+    name: 'couponType',
+    description: 'Coupon schema',
+    class: 'GraphQLObjectType',
+    schema: couponSchema,
+    exclude: ['_id']
+};
           
-export let couponType = MTGQL(configs);
+export default createType(config);
 ~~~
  
 It will be equal to:
 ~~~js
 import {...} from 'graphql';
-import MTGQL from 'mongoose-schema-to-graphql';
-import {couponSchema} from './dbSchemas';
+import { couponSchema } from './dbSchemas';
 
-export let couponType = new GraphQLObjectType({
+export default new GraphQLObjectType({
     name: 'couponType',
     description: 'Coupon schema',
     fields: {
@@ -96,13 +102,13 @@ export let couponType = new GraphQLObjectType({
 Note: If you pass mongoose type ```Array``` it will be converted to ```{type: new GraphQLList(GraphQLString)}```
 If you want to create a list of another type, you would need to declare it in Mongoose schema too:
 ~~~js
-let quizSchema = mongoose.Schema({
+const quizSchema = mongoose.Schema({
     message: String,
     createdAt: mongoose.Schema.Types.Date,
     updatedAt: mongoose.Schema.Types.Date
 });
 
-let customerSchema = mongoose.Schema({
+export const customerSchema = mongoose.Schema({
     createdAt: mongoose.Schema.Types.Date,
     updatedAt: mongoose.Schema.Types.Date,
     firstName: String,
@@ -119,27 +125,26 @@ let customerSchema = mongoose.Schema({
 
 Then: 
 ~~~js
-import MTGQL from 'mongoose-schema-to-graphql';
-import {customerSchema} from './dbSchemas';
+import createType from 'mongoose-schema-to-graphql';
+import { customerSchema } from './dbSchemas';
 
-let configs = {
-              name: 'customerType',
-              description: 'Customer schema',
-              class: 'GraphQLObjectType',
-              schema: customerSchema,
-              exclude: ['_id']
-          }
+const config = {
+    name: 'customerType',
+    description: 'Customer schema',
+    class: 'GraphQLObjectType',
+    schema: customerSchema,
+    exclude: ['_id']
+};
           
-export let couponType = MTGQL(configs);
+export default createType(config);
 ~~~
 
 It's equal to:
 ~~~js
 import {...} from 'graphql';
-import MTGQL from 'mongoose-schema-to-graphql';
-import {customerSchema} from './dbSchemas';
+import { customerSchema } from './dbSchemas';
 
-let quizType = new GraphQLObjectType({
+const quizType = new GraphQLObjectType({
     name: 'quizType',
     description: 'quiz type for customer',
     fields: {
@@ -149,7 +154,7 @@ let quizType = new GraphQLObjectType({
     }
 });
 
-export let customerType = new GraphQLObjectType({
+export default new GraphQLObjectType({
     name: 'customerType',
     description: 'Customer schema',
     fields: {
@@ -173,34 +178,33 @@ export let customerType = new GraphQLObjectType({
 });
 ~~~
 
-###```props``` property in config object.
-You can use this field to pass some additional props. to graphQL type, for example:
+###```extend``` property in config object.
+You can use this field to pass some additional extend. to graphQL type, for example:
 ~~~js
-import {GraphQLFloat} from 'graphql';
-import MTGQL from 'mongoose-schema-to-graphql';
-import {customerSchema} from './dbSchemas';
+import { GraphQLFloat } from 'graphql';
+import createType from 'mongoose-schema-to-graphql';
+import { customerSchema } from './dbSchemas';
 
-let configs = {
-              name: 'customerType',
-              description: 'Customer schema',
-              class: 'GraphQLObjectType',
-              schema: customerSchema,
-              exclude: ['_id'],
-              props: {
-                price: {type: GraphQLFloat}
-              }
-          }
+const config = {
+    name: 'customerType',
+    description: 'Customer schema',
+    class: 'GraphQLObjectType',
+    schema: customerSchema,
+    exclude: ['_id'],
+    extend: {
+      price: {type: GraphQLFloat}
+    }
+};
           
-export let couponType = MTGQL(configs);
+export default createType(config);
 ~~~
 
 It's equal to:
 ~~~js
 import {...} from 'graphql';
-import MTGQL from 'mongoose-schema-to-graphql';
-import {customerSchema} from './dbSchemas';
+import { customerSchema } from './dbSchemas';
 
-let quizType = new GraphQLObjectType({
+const quizType = new GraphQLObjectType({
     name: 'quizType',
     description: 'quiz type for customer',
     fields: {
@@ -210,7 +214,7 @@ let quizType = new GraphQLObjectType({
     }
 });
 
-export let customerType = new GraphQLObjectType({
+export default new GraphQLObjectType({
     name: 'customerType',
     description: 'Customer schema',
     fields: {
@@ -235,7 +239,7 @@ export let customerType = new GraphQLObjectType({
 });
 ~~~
 
-If passed props. already exist in Mongoose schema, for example ```price: Number``` it will be overwrite with prop. we passed in config. object. 
+If passed extend. already exist in Mongoose schema, for example ```price: Number``` it will be overwrite with prop. we passed in config. object. 
 
 If you have any suggestion please leave me a message.
 ##### star to be up to date.
