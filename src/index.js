@@ -97,7 +97,7 @@ function createType(args) {
           const subArgs = {
             name: `${key}SubType_${randomName(10)}`,
             description: `sub-object type for ${key}`,
-            class: 'GraphQLObjectType',
+            class: args.class,
             schema: { paths: newSchemaObject[key] },
             exclude: args.exclude,
           };
@@ -106,7 +106,7 @@ function createType(args) {
           const subArgs = {
             name: `${newSchemaObject[key].path}SubType_${randomName(10)}`,
             description: `sub-object type for ${args.name}`,
-            class: 'GraphQLObjectType',
+            class: args.class,
             schema: newSchemaObject[key].schema,
             exclude: args.exclude,
           };
