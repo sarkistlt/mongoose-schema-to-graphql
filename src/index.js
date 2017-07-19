@@ -57,7 +57,7 @@ function createType(args) {
     const GQLS = {
       name: args.name,
       description: args.description,
-      fields: () => Object.assigh({}, fields, args.extend),
+      fields: () => Object.assign({}, fields, args.extend),
     };
     const tmpArgsObj = { ...args.schema.paths };
     const newSchemaObject = {};
