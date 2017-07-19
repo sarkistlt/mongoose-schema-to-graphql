@@ -135,11 +135,11 @@ function createType(args) {
       });
     }
 
-    if (args.extend) {
-      Object.keys(args.extend).forEach((prop) => {
-        fields[prop] = args.extend[prop];
-      });
-    }
+    // if (args.extend) {
+    //   Object.keys(args.extend).forEach((prop) => {
+    //     fields[prop] = args.extend[prop];
+    //   });
+    // }
 
     // to support old version
     if (args.props) {
