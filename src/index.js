@@ -53,10 +53,14 @@ const mapToObject = (mainObj, prop, instance) => {
 
 function createType(args) {
   if (args.schema && args.schema.paths) {
+    let fields = {};
     const GQLS = {
       name: args.name,
       description: args.description,
-      fields: {},
+      fields: () => {
+        const exts = typeof(args.extendForClosure) == "function" ? args.extendForClosure() : {};
+        return Object.assign({}, fields, exts)
+      },
     };
     const tmpArgsObj = { ...args.schema.paths };
     const newSchemaObject = {};
@@ -101,7 +105,7 @@ function createType(args) {
             schema: { paths: newSchemaObject[key] },
             exclude: args.exclude,
           };
-          GQLS.fields[key] = { type: createType(subArgs) };
+          fields[key] = { type: createType(subArgs) };
         } else if (newSchemaObject[key].schema) {
           const subArgs = {
             name: `${newSchemaObject[key].path}SubType_${randomName(10)}`,
@@ -111,14 +115,14 @@ function createType(args) {
             exclude: args.exclude,
           };
           const typeElement = createType(subArgs);
-          GQLS.fields[key] = { type: new GraphQLList(typeElement) };
+          fields[key] = { type: new GraphQLList(typeElement) };
         } else if (
           newSchemaObject[key] &&
           newSchemaObject[key].path &&
           newSchemaObject[key].instance &&
           newSchemaObject[key].path !== '__v' && !newSchemaObject[key].schema
         ) {
-          GQLS.fields = mapToObject(GQLS.fields,
+          fields = mapToObject(fields,
             newSchemaObject[key].path,
             newSchemaObject[key].instance,
             newSchemaObject);
@@ -128,22 +132,22 @@ function createType(args) {
 
     if (args.exclude) {
       args.exclude.forEach((prop) => {
-        if (GQLS.fields[prop]) {
-          delete GQLS.fields[prop];
+        if (fields[prop]) {
+          delete fields[prop];
         }
       });
     }
 
     if (args.extend) {
       Object.keys(args.extend).forEach((prop) => {
-        GQLS.fields[prop] = args.extend[prop];
+        fields[prop] = args.extend[prop];
       });
     }
 
     // to support old version
     if (args.props) {
       Object.keys(args.props).forEach((prop) => {
-        GQLS.fields[prop] = args.props[prop];
+        fields[prop] = args.props[prop];
       });
     }
 
