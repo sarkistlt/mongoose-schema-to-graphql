@@ -57,7 +57,10 @@ function createType(args) {
     const GQLS = {
       name: args.name,
       description: args.description,
-      fields: () => Object.assign({}, fields, args.extend),
+      fields: () => {
+        const exts = typeof(args.extendForClosure) == "function" ? args.extendForClosure() : {};
+        return Object.assign({}, fields, exts)
+      },
     };
     const tmpArgsObj = { ...args.schema.paths };
     const newSchemaObject = {};
@@ -135,11 +138,11 @@ function createType(args) {
       });
     }
 
-    // if (args.extend) {
-    //   Object.keys(args.extend).forEach((prop) => {
-    //     fields[prop] = args.extend[prop];
-    //   });
-    // }
+    if (args.extend) {
+      Object.keys(args.extend).forEach((prop) => {
+        fields[prop] = args.extend[prop];
+      });
+    }
 
     // to support old version
     if (args.props) {
