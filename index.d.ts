@@ -5,9 +5,9 @@ type ConfigurationObject = {
     description: string,
     class: string,
     schema: mongoose.Schema,
-    exclude: [string],
-    extend: {string:any},
-    fields: {string: any},
+    exclude?: [string],
+    extend?: {string:any},
+    fields?: {string: any},
 };
 
 declare function mainFunction(config: ConfigurationObject): any;
