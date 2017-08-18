@@ -4,7 +4,7 @@ declare module 'mongoose-schema-to-graphql' {
 
     type ConfigurationObject = {
         name: string,
-        description: string,
+        description?: string,
         class: string,
         schema: mongoose.Schema,
         exclude?: [string],
