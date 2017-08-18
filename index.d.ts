@@ -8,8 +8,8 @@ declare module 'mongoose-schema-to-graphql' {
         class: string,
         schema: mongoose.Schema,
         exclude?: [string],
-        extend?: { string: any },
-        fields?: { string: any },
+        extend?: { [key: string]: any },
+        fields?: { [key: string]: any },
     };
 
     function mainFunction(config: ConfigurationObject): any;
