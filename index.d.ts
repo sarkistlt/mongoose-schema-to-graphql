@@ -1,15 +1,25 @@
-import * as mongoose from 'mongoose';
+declare module 'mongoose-schema-to-graphql' {
 
-type ConfigurationObject = {
-    name: string,
-    description: string,
-    class: string,
-    schema: mongoose.Schema,
-    exclude?: [string],
-    extend?: {string:any},
-    fields?: {string: any},
-};
+    import * as mongoose from 'mongoose';
 
-declare function mainFunction(config: ConfigurationObject): any;
+    type ClassFieldType =
+        'GraphQLObjectType' |
+        'GraphQLInputObjectType' |
+        'GraphQLInterfaceType' |
+        'GraphQLUnionType' |
+        'GraphQLEnumType';
 
-export = mainFunction;
+    type ConfigurationObject = {
+        name: string,
+        description?: string,
+        class: ClassFieldType,
+        schema: mongoose.Schema,
+        exclude?: [string],
+        extend?: { [key: string]: any },
+        fields?: { [key: string]: any },
+    };
+
+    function mainFunction(config: ConfigurationObject): any;
+
+    export = mainFunction;
+}
