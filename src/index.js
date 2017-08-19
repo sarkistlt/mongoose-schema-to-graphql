@@ -61,6 +61,8 @@ function createType(args) {
     const tmpArgsObj = { ...args.schema.paths };
     const newSchemaObject = {};
     const noChildSchema = {};
+    const circularFields = [];
+    const circularListFields = [];
 
     for (const key in tmpArgsObj) {
       if (tmpArgsObj[key].hasOwnProperty('schema')) {
@@ -93,7 +95,10 @@ function createType(args) {
 
     for (const key in newSchemaObject) {
       if (newSchemaObject.hasOwnProperty(key)) {
-        if (!newSchemaObject[key].hasOwnProperty('instance')) {
+        if (
+          !newSchemaObject[key].caster &&
+          !newSchemaObject[key].hasOwnProperty('instance')
+        ) {
           const subArgs = {
             name: `${key}SubType_${randomName(10)}`,
             description: `sub-object type for ${key}`,
@@ -102,7 +107,10 @@ function createType(args) {
             exclude: args.exclude,
           };
           GQLS.fields[key] = { type: createType(subArgs) };
-        } else if (newSchemaObject[key].schema) {
+        } else if (
+          !newSchemaObject[key].caster &&
+          newSchemaObject[key].schema
+        ) {
           const subArgs = {
             name: `${newSchemaObject[key].path}SubType_${randomName(10)}`,
             description: `sub-object type for ${args.name}`,
@@ -113,6 +121,7 @@ function createType(args) {
           const typeElement = createType(subArgs);
           GQLS.fields[key] = { type: new GraphQLList(typeElement) };
         } else if (
+          !newSchemaObject[key].caster &&
           newSchemaObject[key] &&
           newSchemaObject[key].path &&
           newSchemaObject[key].instance &&
@@ -122,6 +131,13 @@ function createType(args) {
             newSchemaObject[key].path,
             newSchemaObject[key].instance,
             newSchemaObject);
+        } else if (newSchemaObject[key].caster) {
+          if (newSchemaObject[key].casterConstructor) {
+            circularListFields.push(key);
+          } else {
+            circularFields.push(key);
+          }
+          GQLS.fields[key] = {};
         }
       }
     }
@@ -148,15 +164,62 @@ function createType(args) {
     }
 
     if (args.class === 'GraphQLObjectType') {
-      return new GraphQLObjectType(GQLS);
+
+
+      const typeSchema = new GraphQLObjectType({
+        ...GQLS,
+        fields: () => {
+          circularFields.forEach(key => (GQLS.fields[key] = typeSchema));
+          circularListFields.forEach(key => (GQLS.fields[key] = new GraphQLList(typeSchema)));
+
+          return GQLS.fields;
+        },
+      });
+      return typeSchema;
     } else if (args.class === 'GraphQLInputObjectType') {
-      return new GraphQLInputObjectType(GQLS);
+      const typeSchema = new GraphQLInputObjectType({
+        ...GQLS,
+        fields: () => {
+          circularFields.forEach(key => (GQLS.fields[key] = typeSchema));
+          circularListFields.forEach(key => (GQLS.fields[key] = new GraphQLList(typeSchema)));
+
+          return GQLS.fields;
+        },
+      });
+      return typeSchema;
     } else if (args.class === 'GraphQLInterfaceType') {
-      return new GraphQLInterfaceType(GQLS);
+      const typeSchema = new GraphQLInterfaceType({
+        ...GQLS,
+        fields: () => {
+          circularFields.forEach(key => (GQLS.fields[key] = typeSchema));
+          circularListFields.forEach(key => (GQLS.fields[key] = new GraphQLList(typeSchema)));
+
+          return GQLS.fields;
+        },
+      });
+      return typeSchema;
     } else if (args.class === 'GraphQLUnionType') {
-      return new GraphQLUnionType(GQLS);
+      const typeSchema = new GraphQLUnionType({
+        ...GQLS,
+        fields: () => {
+          circularFields.forEach(key => (GQLS.fields[key] = typeSchema));
+          circularListFields.forEach(key => (GQLS.fields[key] = new GraphQLList(typeSchema)));
+
+          return GQLS.fields;
+        },
+      });
+      return typeSchema;
     } else if (args.class === 'GraphQLEnumType') {
-      return new GraphQLEnumType(GQLS);
+      const typeSchema = new GraphQLEnumType({
+        ...GQLS,
+        fields: () => {
+          circularFields.forEach(key => (GQLS.fields[key] = typeSchema));
+          circularListFields.forEach(key => (GQLS.fields[key] = new GraphQLList(typeSchema)));
+
+          return GQLS.fields;
+        },
+      });
+      return typeSchema;
     }
     return new SyntaxError('Enter correct graphQL class name.');
   }
