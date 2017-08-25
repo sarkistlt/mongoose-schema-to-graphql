@@ -1,18 +1,34 @@
 {
-    "presets": [
-        "es2015",
-        "stage-0"
-    ],
-    "sourceRoot": "src",
-    "env": {
-        "dev": {
-            "compact": false,
-            "comments": true
-        },
-        "release": {
-            "compact": true,
-            "comments": false,
-            "minified": true
+  "presets": [
+    "stage-0",
+    [
+      "env",
+      {
+        "targets": {
+          "node": "4"
         }
+      }
+    ]
+  ],
+  "plugins": [
+    "transform-flow-comments"
+  ],
+  "sourceRoot": "src",
+  "env": {
+    "development": {
+      "compact": false,
+      "comments": true
+    },
+    "production": {
+      "presets": [
+        "flow"
+      ],
+      "plugins": [
+        "remove-comments"
+      ],
+      "compact": true,
+      "comments": false,
+      "minified": true
     }
+  }
 }

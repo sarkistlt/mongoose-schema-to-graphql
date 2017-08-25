@@ -1,19 +1,12 @@
 import mongoose from 'mongoose';
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-  GraphQLInt,
-} from 'graphql';
+import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import mongooseSchemaToGraphQL, {
-  generateNameForSubField,
   generateDescriptionForSubField,
-} from '..';
+  generateNameForSubField,
+} from '../../lib/index.min';
 
-import {
-  getRidOfThunks,
-} from './util';
+import { getRidOfThunks } from './util';
 
 test('generates schemas with population usage correctly', () => {
   const NAME = 'RecursiveTestSchema';
@@ -41,7 +34,7 @@ test('generates schemas with population usage correctly', () => {
     name: NAME,
     description: DESCRIPTION,
     fields: () => ({
-      whatever: {type: NothingType},
+      whatever: { type: NothingType },
     }),
   }));
 

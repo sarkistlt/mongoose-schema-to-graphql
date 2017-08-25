@@ -1,19 +1,12 @@
 import mongoose from 'mongoose';
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-  GraphQLInt,
-} from 'graphql';
+import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import mongooseSchemaToGraphQL, {
-  generateNameForSubField,
   generateDescriptionForSubField,
-} from '..';
+  generateNameForSubField,
+} from '../../lib/index.min';
 
-import {
-  getRidOfThunks,
-} from './util';
+import { getRidOfThunks } from './util';
 
 test('generates schemas with primitive arrays correctly', () => {
   const NAME = 'ArrayTestSchema';
@@ -39,8 +32,8 @@ test('generates schemas with primitive arrays correctly', () => {
       name: NAME,
       description: DESCRIPTION,
       fields: () => ({
-        something: {type: GraphQLString},
-        whatever: {type: new GraphQLList(GraphQLString)},
+        something: { type: GraphQLString },
+        whatever: { type: new GraphQLList(GraphQLString) },
       }),
     })),
   );

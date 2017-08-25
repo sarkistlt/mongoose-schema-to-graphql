@@ -1,19 +1,12 @@
 import mongoose from 'mongoose';
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-  GraphQLInt,
-} from 'graphql';
+import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import mongooseSchemaToGraphQL, {
-  generateNameForSubField,
   generateDescriptionForSubField,
-} from '..';
+  generateNameForSubField,
+} from '../../lib/index.min';
 
-import {
-  getRidOfThunks,
-} from './util';
+import { getRidOfThunks } from './util';
 
 test('excludes given fields', () => {
   const NAME = 'ExcludeTestSchema';
@@ -35,7 +28,7 @@ test('excludes given fields', () => {
       name: NAME,
       description: DESCRIPTION,
       fields: () => ({
-        a: {type: GraphQLInt},
+        a: { type: GraphQLInt },
       }),
     })),
   );

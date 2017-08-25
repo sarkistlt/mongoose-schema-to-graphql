@@ -1,19 +1,12 @@
 import mongoose from 'mongoose';
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-  GraphQLInt,
-} from 'graphql';
+import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import mongooseSchemaToGraphQL, {
-  generateNameForSubField,
   generateDescriptionForSubField,
-} from '..';
+  generateNameForSubField,
+} from '../../lib/index.min';
 
-import {
-  getRidOfThunks,
-} from './util';
+import { getRidOfThunks } from './util';
 
 test('adds given fields with `extend` property', () => {
   const NAME = 'ExtendTestSchema';
@@ -28,7 +21,7 @@ test('adds given fields with `extend` property', () => {
         a: Number,
       }),
       extend: {
-        b: {type: GraphQLString},
+        b: { type: GraphQLString },
       },
       exclude: ['_id'],
     })),
@@ -37,8 +30,8 @@ test('adds given fields with `extend` property', () => {
       name: NAME,
       description: DESCRIPTION,
       fields: () => ({
-        a: {type: GraphQLInt},
-        b: {type: GraphQLString},
+        a: { type: GraphQLInt },
+        b: { type: GraphQLString },
       }),
     })),
   );

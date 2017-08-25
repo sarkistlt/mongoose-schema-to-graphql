@@ -1,19 +1,12 @@
 import mongoose from 'mongoose';
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-  GraphQLInt,
-} from 'graphql';
+import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import mongooseSchemaToGraphQL, {
-  generateNameForSubField,
   generateDescriptionForSubField,
-} from '..';
+  generateNameForSubField,
+} from '../../lib/index.min';
 
-import {
-  getRidOfThunks,
-} from './util';
+import { getRidOfThunks } from './util';
 
 test('generates nested schema correctly', () => {
   const NAME = 'NestedTestSchema';
@@ -45,13 +38,13 @@ test('generates nested schema correctly', () => {
           name: generateNameForSubField(NAME, 'whatever'),
           description: generateDescriptionForSubField(NAME, 'whatever'),
           fields: () => ({
-            a: {type: GraphQLString},
-            b: {type: GraphQLString},
-          })
+            a: { type: GraphQLString },
+            b: { type: GraphQLString },
+          }),
         }),
       },
     }),
   }));
 
-  expect(ReceivedType).toEqual(ExpectedType);
+  expect(JSON.stringify(ExpectedType)).toEqual(JSON.stringify(ReceivedType));
 });

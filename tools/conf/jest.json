@@ -1,11 +1,12 @@
 {
   "verbose": true,
-  "rootDir": "../../src",
+  "rootDir": "../../",
+  "testEnvironment": "node",
   "testMatch": [
     "**/__tests__/**/*.spec.js"
   ],
   "collectCoverageFrom": [
-    "src/**/*.js"
+    "lib/**/*.js"
   ],
   "coverageDirectory": "<rootDir>/coverage",
   "coverageReporters": [
@@ -13,6 +14,6 @@
     "text-summary"
   ],
   "modulePaths": [
-    "<rootDir>/src/"
+    "<rootDir>/lib/"
   ]
 }

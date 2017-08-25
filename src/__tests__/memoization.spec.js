@@ -1,19 +1,10 @@
 import mongoose from 'mongoose';
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-  GraphQLInt,
-} from 'graphql';
+import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import mongooseSchemaToGraphQL, {
-  generateNameForSubField,
   generateDescriptionForSubField,
-} from '..';
-
-import {
-  getRidOfThunks,
-} from './util';
+  generateNameForSubField,
+} from '../../lib/index.min';
 
 test('memoizes created types', () => {
   const NAME = 'ExtendTestSchema';
@@ -27,7 +18,7 @@ test('memoizes created types', () => {
       a: Number,
     }),
     extend: {
-      b: {type: GraphQLString},
+      b: { type: GraphQLString },
     },
     exclude: ['_id'],
   };

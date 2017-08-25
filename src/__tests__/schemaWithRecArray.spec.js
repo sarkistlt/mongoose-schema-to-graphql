@@ -1,15 +1,9 @@
 import mongoose from 'mongoose';
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-} from 'graphql';
+import { GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 
-import mongooseSchemaToGraphQL from '..';
+import mongooseSchemaToGraphQL from '../../lib/index.min';
 
-import {
-  getRidOfThunks,
-} from './util';
+import { getRidOfThunks } from './util';
 
 test('generates schemas with arrays which contain the same schema correctly', () => {
   const NAME = 'RecursiveArrayTestType';
@@ -36,7 +30,7 @@ test('generates schemas with arrays which contain the same schema correctly', ()
     description: DESCRIPTION,
     fields: () => ({
       something: { type: GraphQLString },
-      whatever: { type: new GraphQLList(ExpectedType), },
+      whatever: { type: new GraphQLList(ExpectedType) },
     }),
   });
   ExpectedType = getRidOfThunks(ExpectedType);

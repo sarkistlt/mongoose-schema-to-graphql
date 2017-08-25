@@ -1,19 +1,12 @@
 import mongoose from 'mongoose';
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-  GraphQLInt,
-} from 'graphql';
+import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import mongooseSchemaToGraphQL, {
-  generateNameForSubField,
   generateDescriptionForSubField,
-} from '..';
+  generateNameForSubField,
+} from '../../lib/index.min';
 
-import {
-  getRidOfThunks,
-} from './util';
+import { getRidOfThunks } from './util';
 
 test('generates flat schema correctly', () => {
   const NAME = 'FlatTestSchema';
@@ -34,8 +27,8 @@ test('generates flat schema correctly', () => {
     name: NAME,
     description: DESCRIPTION,
     fields: () => ({
-      something: {type: GraphQLString},
-      whatever: {type: GraphQLString},
+      something: { type: GraphQLString },
+      whatever: { type: GraphQLString },
     }),
   }));
 

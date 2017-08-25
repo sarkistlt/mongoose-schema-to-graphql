@@ -1,19 +1,12 @@
 import mongoose from 'mongoose';
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLList,
-  GraphQLInt,
-} from 'graphql';
+import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 
 import mongooseSchemaToGraphQL, {
-  generateNameForSubField,
   generateDescriptionForSubField,
-} from '..';
+  generateNameForSubField,
+} from '../../lib/index.min';
 
-import {
-  getRidOfThunks,
-} from './util';
+import { getRidOfThunks } from './util';
 
 test('generates schemas with arrays correctly', () => {
   const NAME = 'ArrayTestSchema';
@@ -44,15 +37,17 @@ test('generates schemas with arrays correctly', () => {
       name: NAME,
       description: DESCRIPTION,
       fields: () => ({
-        something: {type: GraphQLString},
-        whatever: {type: new GraphQLList(new GraphQLObjectType({
-          name: generateNameForSubField(NAME, 'whatever'),
-          description: generateDescriptionForSubField(NAME, 'whatever'),
-          fields: () => ({
-            a: {type: GraphQLInt},
-            b: {type: GraphQLInt},
-          }),
-        }))},
+        something: { type: GraphQLString },
+        whatever: {
+          type: new GraphQLList(new GraphQLObjectType({
+            name: generateNameForSubField(NAME, 'whatever'),
+            description: generateDescriptionForSubField(NAME, 'whatever'),
+            fields: () => ({
+              a: { type: GraphQLInt },
+              b: { type: GraphQLInt },
+            }),
+          })),
+        },
       }),
     })),
   );
