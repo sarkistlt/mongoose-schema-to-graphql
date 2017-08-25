@@ -8,7 +8,7 @@
 This package will help you  avoid typing schemas for same essence.
 If you already have Mongoose schema that's enough to generate graphQL type.
 
-###How it works.
+### How it works.
 First:
 ~~~shell
 npm i -S mongoose-schema-to-graphql
