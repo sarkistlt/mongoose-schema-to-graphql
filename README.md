@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sarkistlt/mongoose-schema-to-graphql.svg?branch=master)](https://travis-ci.org/sarkistlt/mongoose-schema-to-graphql)
+
 ## Use your existed Mongoose schema to generate graphQL types.
 #### Full support of all graphQL "Definitions" and "Scalars" besides "GraphQLFloat", because in Mongoose schema you can use only int. numbers. But you can use ```extend``` property to pass it, details below. 
 

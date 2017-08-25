@@ -7,7 +7,7 @@
     "build": "yarn run build:dev && yarn run build:prod",
     "build:dev": "NODE_ENV=development babel src/index.js --source-maps --out-file lib/index.js",
     "build:prod": "NODE_ENV=production babel src/index.js --out-file lib/index.min.js",
-    "test": "npm run build:dev && jest -c tools/conf/jest.json",
+    "test": "npm run build && jest -c tools/conf/jest.json",
     "prepublish": "npm run test"
   },
   "keywords": [

@@ -1,0 +1,7 @@
+language: node_js
+node_js:
+    - "4"
+before_script:
+    - npm install && npm install graphql mongoose
+script:
+    - npm run test
