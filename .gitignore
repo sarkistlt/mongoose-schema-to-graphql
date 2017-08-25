@@ -3,6 +3,5 @@ node_modules
 *.log
 .DS_Store
 /public/bundles/
-lib
 .babelrc
 /yarn.lock
