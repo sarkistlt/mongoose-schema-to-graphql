@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/npm/l/mongoose-schema-to-graphql.svg)](https://www.npmjs.com/package/mongoose-schema-to-graphql)
+[![NPM](https://img.shields.io/npm/v/mongoose-schema-to-graphql.svg)](https://www.npmjs.com/package/mongoose-schema-to-graphql)
 [![Build Status](https://travis-ci.org/sarkistlt/mongoose-schema-to-graphql.svg?branch=master)](https://travis-ci.org/sarkistlt/mongoose-schema-to-graphql)
 
 ## Use your existed Mongoose schema to generate graphQL types.
