@@ -2,6 +2,6 @@ language: node_js
 node_js:
     - "4"
 before_script:
-    - npm install && npm install graphql mongoose
+    - npm i -g yarn && yarn install && yarn add graphql@0.7.1 mongoose@4.11.7
 script:
     - npm run test
