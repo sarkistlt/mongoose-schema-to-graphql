@@ -3,4 +3,5 @@ node_modules
 *.log
 .DS_Store
 /public/bundles/
-/1.js
+lib
+.babelrc

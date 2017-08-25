@@ -10,219 +10,302 @@ import {
   GraphQLString,
   GraphQLUnionType,
 } from 'graphql';
+import mongoose from 'mongoose';
 
-const randomName = (len) => {
-  let text = '';
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-  for (let i = 0; i < len; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
+const possibleGraphQLClasses = {
+  GraphQLObjectType: GraphQLObjectType,
+  GraphQLInputObjectType: GraphQLInputObjectType,
+  GraphQLInterfaceType: GraphQLInterfaceType,
+  GraphQLUnionType: GraphQLUnionType,
+  GraphQLEnumType: GraphQLEnumType,
 };
 
-const mapToObject = (mainObj, prop, instance) => {
-  switch (instance) {
+/**
+ * @summary Set the function name property.
+ */
+const setFnName = (fn, name) =>
+  Object.defineProperty(fn, 'name', { value: name });
+
+export const generateNameForSubField = (rootTypeName, subFieldKeyName) =>
+  `${rootTypeName}_${subFieldKeyName}`;
+
+export const generateDescriptionForSubField = (rootTypeName, subFieldKeyName) =>
+  `${rootTypeName}'s '${subFieldKeyName}' sub-field`;
+
+/**
+ * @summary
+ * Convert the primitive object Mongoose instance
+ * name to the GraphQL type instance.
+ */
+const convertPrimitiveObjectInstanceToGraphQLType = (instanceName) => {
+  switch (instanceName) {
     case 'ObjectID':
-      mainObj[prop] = { type: GraphQLString };
-      break;
     case 'String':
-      mainObj[prop] = { type: GraphQLString };
-      break;
     case 'Date':
-      mainObj[prop] = { type: GraphQLString };
-      break;
-    case 'Mixed':
-      mainObj[prop] = { type: GraphQLString };
-      break;
+    case 'Mixed': return GraphQLString;
     case 'Boolean':
-      mainObj[prop] = { type: GraphQLBoolean };
-      break;
-    case 'Buffer':
-      mainObj[prop] = { type: GraphQLBoolean };
-      break;
-    case 'Number':
-      mainObj[prop] = { type: GraphQLInt };
-      break;
-    case 'Array':
-      mainObj[prop] = { type: new GraphQLList(GraphQLString) };
-      break;
+    case 'Buffer': return GraphQLBoolean
+    case 'Number': return GraphQLInt;
+    default: throw new Error(
+      `unknown primitive object instance name: "${instanceName}"`,
+    );
   }
-  return mainObj;
 };
 
-function createType(args) {
-  if (args.schema && args.schema.paths) {
-    const GQLS = {
-      name: args.name,
-      description: args.description,
-      fields: {},
-    };
-    const tmpArgsObj = { ...args.schema.paths };
-    const newSchemaObject = {};
-    const noChildSchema = {};
-    const circularFields = [];
-    const circularListFields = [];
+/**
+ * @summary
+ * Generate the GraphQL type using given GraphQL type class
+ * and the configuration for that type class.
+ */
+const generateGraphQLType = (typeClass, config) =>
+  new possibleGraphQLClasses[typeClass](config);
 
-    for (const key in tmpArgsObj) {
-      if (tmpArgsObj[key].hasOwnProperty('schema')) {
-        newSchemaObject[key] = tmpArgsObj[key];
-        tmpArgsObj[key] = {};
-      }
-    }
-    for (const key in tmpArgsObj) {
-      if (tmpArgsObj.hasOwnProperty(key) && !tmpArgsObj[key].schema) {
-        noChildSchema[key] = tmpArgsObj[key];
-      }
-    }
-    Object.keys(noChildSchema).forEach((k) => {
-      if (!noChildSchema[k].hasOwnProperty('schema')) {
-        const path = k.split('.');
-        const last = path.pop();
-
-        if (path.length) {
-          path.reduce((r, a) => r[a] = r[a] || {}, noChildSchema)[last] = noChildSchema[k];
-          path.reduce((r, a) => r[a] = r[a] || {}, noChildSchema)[last].path = last;
-          delete noChildSchema[k];
-        }
-      }
-    });
-    for (const key in noChildSchema) {
-      if (noChildSchema.hasOwnProperty(key) && !newSchemaObject.hasOwnProperty(key)) {
-        newSchemaObject[key] = noChildSchema[key];
-      }
-    }
-
-    for (const key in newSchemaObject) {
-      if (newSchemaObject.hasOwnProperty(key)) {
-        if (
-          !newSchemaObject[key].caster &&
-          !newSchemaObject[key].hasOwnProperty('instance')
-        ) {
-          const subArgs = {
-            name: `${key}SubType_${randomName(10)}`,
-            description: `sub-object type for ${key}`,
-            class: args.class,
-            schema: { paths: newSchemaObject[key] },
-            exclude: args.exclude,
-          };
-          GQLS.fields[key] = { type: createType(subArgs) };
-        } else if (
-          !newSchemaObject[key].caster &&
-          newSchemaObject[key].schema
-        ) {
-          const subArgs = {
-            name: `${newSchemaObject[key].path}SubType_${randomName(10)}`,
-            description: `sub-object type for ${args.name}`,
-            class: args.class,
-            schema: newSchemaObject[key].schema,
-            exclude: args.exclude,
-          };
-          const typeElement = createType(subArgs);
-          GQLS.fields[key] = { type: new GraphQLList(typeElement) };
-        } else if (
-          !newSchemaObject[key].caster &&
-          newSchemaObject[key] &&
-          newSchemaObject[key].path &&
-          newSchemaObject[key].instance &&
-          newSchemaObject[key].path !== '__v' && !newSchemaObject[key].schema
-        ) {
-          GQLS.fields = mapToObject(GQLS.fields,
-            newSchemaObject[key].path,
-            newSchemaObject[key].instance,
-            newSchemaObject);
-        } else if (newSchemaObject[key].caster) {
-          if (newSchemaObject[key].casterConstructor) {
-            circularListFields.push(key);
-          } else {
-            circularFields.push(key);
-          }
-          GQLS.fields[key] = {};
-        }
-      }
-    }
-
-    if (args.exclude) {
-      args.exclude.forEach((prop) => {
-        if (GQLS.fields[prop]) {
-          delete GQLS.fields[prop];
-        }
-      });
-    }
-
-    if (args.extend) {
-      Object.keys(args.extend).forEach((prop) => {
-        GQLS.fields[prop] = args.extend[prop];
-      });
-    }
-
-    // to support old version
-    if (args.props) {
-      Object.keys(args.props).forEach((prop) => {
-        GQLS.fields[prop] = args.props[prop];
-      });
-    }
-
-    if (args.class === 'GraphQLObjectType') {
-
-
-      const typeSchema = new GraphQLObjectType({
-        ...GQLS,
-        fields: () => {
-          circularFields.forEach(key => (GQLS.fields[key] = typeSchema));
-          circularListFields.forEach(key => (GQLS.fields[key] = new GraphQLList(typeSchema)));
-
-          return GQLS.fields;
-        },
-      });
-      return typeSchema;
-    } else if (args.class === 'GraphQLInputObjectType') {
-      const typeSchema = new GraphQLInputObjectType({
-        ...GQLS,
-        fields: () => {
-          circularFields.forEach(key => (GQLS.fields[key] = typeSchema));
-          circularListFields.forEach(key => (GQLS.fields[key] = new GraphQLList(typeSchema)));
-
-          return GQLS.fields;
-        },
-      });
-      return typeSchema;
-    } else if (args.class === 'GraphQLInterfaceType') {
-      const typeSchema = new GraphQLInterfaceType({
-        ...GQLS,
-        fields: () => {
-          circularFields.forEach(key => (GQLS.fields[key] = typeSchema));
-          circularListFields.forEach(key => (GQLS.fields[key] = new GraphQLList(typeSchema)));
-
-          return GQLS.fields;
-        },
-      });
-      return typeSchema;
-    } else if (args.class === 'GraphQLUnionType') {
-      const typeSchema = new GraphQLUnionType({
-        ...GQLS,
-        fields: () => {
-          circularFields.forEach(key => (GQLS.fields[key] = typeSchema));
-          circularListFields.forEach(key => (GQLS.fields[key] = new GraphQLList(typeSchema)));
-
-          return GQLS.fields;
-        },
-      });
-      return typeSchema;
-    } else if (args.class === 'GraphQLEnumType') {
-      const typeSchema = new GraphQLEnumType({
-        ...GQLS,
-        fields: () => {
-          circularFields.forEach(key => (GQLS.fields[key] = typeSchema));
-          circularListFields.forEach(key => (GQLS.fields[key] = new GraphQLList(typeSchema)));
-
-          return GQLS.fields;
-        },
-      });
-      return typeSchema;
-    }
-    return new SyntaxError('Enter correct graphQL class name.');
+/**
+ * @summary
+ * Check passed arguments for errors.
+ */
+const checkArgsForErrors = (args) => {
+  if (!args) {
+    throw new Error('options are required');
   }
+
+  if (!args.schema) {
+    throw new Error('`schema` option *should* be provided');
+  }
+
+  if (!args.schema.paths) {
+    throw new Error('`schema` option should be a valid mongoose.Schema instance');
+  }
+
+  if (!args.name) {
+    throw new Error('`name` option *should* be provided');
+  }
+
+  if (!args.class) {
+    throw new Error('`class` option is required');
+  }
+
+  if (Object.keys(possibleGraphQLClasses).indexOf(args.class) === -1) {
+    throw new Error('invalid `class` option specified');
+  }
+};
+
+/**
+ * @summary
+ * Parse given arguments object.
+ */
+const parseArgs = (args) => {
+  checkArgsForErrors(args);
+  const res = args;
+  res.exclude = args.exclude || [];
+  res.extend = args.extend || {};
+  res.props = args.props || {};
+  return res;
+};
+
+/**
+ * @summary
+ * The already-generated types memory.
+ */
+const generatedTypesMemory = {};
+
+/**
+ * @summary
+ * Memoize given type with a given name.
+ */
+const memoize = (name, resultingGraphQLType) => {
+  if (generatedTypesMemory[name]) {
+    throw new Error('attempt to create GraphQL type with already existing name');
+  }
+
+  generatedTypesMemory[name] = resultingGraphQLType;
+}
+
+/**
+ * @summary Retrieve type from the memory by name.
+ */
+const getFromMemory = name => generatedTypesMemory[name];
+
+const createType = (args) => {
+  const parsedArgs = parseArgs(args);
+
+  // Check if this type is already memoized
+  const alreadyGeneratedType = getFromMemory(parsedArgs.name);
+  if (alreadyGeneratedType) return alreadyGeneratedType;
+
+  // The resulting object which would be passed to the
+  // constructor of the new GraphQL type.
+  const resultingGraphQLOptions = {
+    name: parsedArgs.name,
+    description: parsedArgs.description,
+    fields: () => ({}),
+  };
+
+  // The resulting GraphQL type.
+  let resultingGraphQLType = null;
+
+  const rootSchemaPaths = parsedArgs.schema.paths;
+
+  const setResultingTypeField = (key, val) => {
+    let oldFields = resultingGraphQLOptions.fields;
+    resultingGraphQLOptions.fields = () => Object.assign(
+      {},
+      oldFields(),
+      { [key]: val },
+    );
+  };
+
+  const setResultingTypeFieldFn = (key, val) => {
+    let oldFields = resultingGraphQLOptions.fields;
+    resultingGraphQLOptions.fields = () => Object.assign(
+      {},
+      oldFields(),
+      { [key]: val() },
+    );
+  };
+
+  const extendResultingTypeField = (newFields) => {
+    let oldFields = resultingGraphQLOptions.fields;
+    resultingGraphQLOptions.fields = () => Object.assign(
+      {},
+      oldFields(),
+      (typeof newFields === 'function') ? newFields() : newFields,
+    );
+  };
+
+  Object
+    .keys(rootSchemaPaths)
+    .filter((pathName) => parsedArgs.exclude.indexOf(pathName) === -1)
+    .map((pathName) => {
+      const path = rootSchemaPaths[pathName];
+
+      // If path points to another object
+      // (this is called "population" in Mongoose)
+      if (path.caster && path.caster.options && path.caster.options.ref) {
+        // Get the type of the pointer
+        const refTypeName = path.caster.options.ref;
+
+        setResultingTypeFieldFn(
+          pathName,
+          () => {
+            // Get the type from the memory
+            const refGraphQLType = getFromMemory(refTypeName);
+
+            if (!refGraphQLType) {
+              throw new Error(
+                `
+type with name "${refTypeName}" doesn't exist,
+but was specified as population reference.
+*NOTE*: This error was thrown while creating "${parsedArgs.name}" GraphQL type.
+`,
+              );
+            }
+
+            return {
+              type: refGraphQLType
+            };
+          }
+        );
+
+        // Go to the next path
+        return;
+      }
+
+      const pathInstanceName = path.instance;
+
+      // If the field represents another user-defined schema
+      if (pathInstanceName == 'Embedded') {
+        if (parsedArgs.schema === path.schema) {
+          setResultingTypeFieldFn(pathName, () => ({
+            type: resultingGraphQLType,
+          }));
+        } else {
+          setResultingTypeField(
+            pathName,
+            {
+              type: createType({
+                name: generateNameForSubField(resultingGraphQLOptions.name, pathName),
+                description: generateDescriptionForSubField(
+                  resultingGraphQLOptions.name,
+                  pathName,
+                ),
+                class: parsedArgs.class,
+                schema: path.schema,
+                exclude: parsedArgs.exclude,
+              }),
+            }
+          );
+        }
+
+        // Go to the next path
+        return;
+      }
+
+      // If the field represents an array
+      if (pathInstanceName == 'Array') {
+        if (path.schema) {
+          // This is the array which contains other user-defined schema
+          if (parsedArgs.schema === path.schema) {
+            // If the array contains the same type.
+            setResultingTypeFieldFn(
+              pathName,
+              () => ({
+                type: new GraphQLList(resultingGraphQLType),
+              }),
+            );
+          } else {
+            setResultingTypeField(
+              pathName,
+              {
+                type: new GraphQLList(createType({
+                  name: generateNameForSubField(resultingGraphQLOptions.name, pathName),
+                  description: generateDescriptionForSubField(
+                    resultingGraphQLOptions.name,
+                    pathName,
+                  ),
+                  class: parsedArgs.class,
+                  schema: path.schema,
+                  exclude: parsedArgs.exclude,
+                })),
+              },
+            );
+          }
+        } else {
+          const arrayElementInstanceName = path.caster.instance;
+          const resType = new GraphQLList(
+            convertPrimitiveObjectInstanceToGraphQLType(
+              arrayElementInstanceName));
+
+          setResultingTypeField(pathName, { type: resType });
+        }
+
+        // Go to the next path
+        return;
+      }
+
+      // If we are reached this point, that means that
+      // the field is of a primitive type.
+      setResultingTypeField(
+        pathName,
+        {type: convertPrimitiveObjectInstanceToGraphQLType(pathInstanceName)},
+      );
+    });
+
+  // Extend the resulting type configuration with the given fields
+  extendResultingTypeField(parsedArgs.extend);
+  extendResultingTypeField(parsedArgs.props);
+
+  setFnName(resultingGraphQLOptions.fields, 'fields');
+
+  resultingGraphQLType = generateGraphQLType(
+    parsedArgs.class,
+    resultingGraphQLOptions,
+  );
+
+  // Memoize
+  memoize(parsedArgs.name, resultingGraphQLType);
+
+  return resultingGraphQLType;
 }
 
 export default createType;

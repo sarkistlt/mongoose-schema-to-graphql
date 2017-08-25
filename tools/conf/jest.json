@@ -1,0 +1,18 @@
+{
+  "verbose": true,
+  "rootDir": "../../src",
+  "testMatch": [
+    "**/__tests__/**/*.spec.js"
+  ],
+  "collectCoverageFrom": [
+    "src/**/*.js"
+  ],
+  "coverageDirectory": "<rootDir>/coverage",
+  "coverageReporters": [
+    "html",
+    "text-summary"
+  ],
+  "modulePaths": [
+    "<rootDir>/src/"
+  ]
+}
