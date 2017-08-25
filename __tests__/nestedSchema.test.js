@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
-import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
-
+import { GraphQLObjectType, GraphQLString } from 'graphql';
 import mongooseSchemaToGraphQL, {
   generateDescriptionForSubField,
   generateNameForSubField,

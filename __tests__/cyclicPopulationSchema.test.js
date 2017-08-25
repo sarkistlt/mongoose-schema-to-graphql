@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
-import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
-
-import mongooseSchemaToGraphQL, {
-  generateDescriptionForSubField,
-  generateNameForSubField,
-} from '../lib/index.min';
+import { GraphQLObjectType } from 'graphql';
+import mongooseSchemaToGraphQL from '../lib/index.min';
 
 import { getRidOfThunks } from '../tools/util';
 
