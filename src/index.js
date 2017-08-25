@@ -121,7 +121,7 @@ const memoize = (name, resultingGraphQLType) => {
  */
 const getFromMemory = name => generatedTypesMemory[name];
 
-export default function (args) {
+function createType(args) {
   const parsedArgs = parseArgs(args);
 
   // Check if this type is already memoized
@@ -302,3 +302,5 @@ but was specified as population reference.
 
   return resultingGraphQLType;
 }
+
+export default createType;
