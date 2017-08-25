@@ -4,12 +4,12 @@ import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graph
 import mongooseSchemaToGraphQL, {
   generateDescriptionForSubField,
   generateNameForSubField,
-} from '../../lib/index.min';
+} from '../lib/index.min';
 
-import { getRidOfThunks } from '../../tools/util';
+import { getRidOfThunks } from '../tools/util';
 
-test('adds given fields with `extend` property', () => {
-  const NAME = 'ExtendTestSchema';
+test('excludes given fields', () => {
+  const NAME = 'ExcludeTestSchema';
   const DESCRIPTION = 'Testing';
 
   expect(
@@ -19,11 +19,9 @@ test('adds given fields with `extend` property', () => {
       description: DESCRIPTION,
       schema: new mongoose.Schema({
         a: Number,
+        b: String,
       }),
-      extend: {
-        b: { type: GraphQLString },
-      },
-      exclude: ['_id'],
+      exclude: ['_id', 'b'],
     })),
   ).toEqual(
     getRidOfThunks(new GraphQLObjectType({
@@ -31,7 +29,6 @@ test('adds given fields with `extend` property', () => {
       description: DESCRIPTION,
       fields: () => ({
         a: { type: GraphQLInt },
-        b: { type: GraphQLString },
       }),
     })),
   );

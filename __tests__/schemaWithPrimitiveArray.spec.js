@@ -4,22 +4,17 @@ import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graph
 import mongooseSchemaToGraphQL, {
   generateDescriptionForSubField,
   generateNameForSubField,
-} from '../../lib/index.min';
+} from '../lib/index.min';
 
-import { getRidOfThunks } from '../../tools/util';
+import { getRidOfThunks } from '../tools/util';
 
-test('generates schemas with arrays correctly', () => {
+test('generates schemas with primitive arrays correctly', () => {
   const NAME = 'ArrayTestSchema';
   const DESCRIPTION = 'Testing';
 
-  const WhateverSchema = new mongoose.Schema({
-    a: Number,
-    b: Number,
-  });
-
   const Schema = new mongoose.Schema({
     something: String,
-    whatever: [WhateverSchema],
+    whatever: [String],
   });
 
   const ExpectedType = getRidOfThunks(
@@ -38,19 +33,10 @@ test('generates schemas with arrays correctly', () => {
       description: DESCRIPTION,
       fields: () => ({
         something: { type: GraphQLString },
-        whatever: {
-          type: new GraphQLList(new GraphQLObjectType({
-            name: generateNameForSubField(NAME, 'whatever'),
-            description: generateDescriptionForSubField(NAME, 'whatever'),
-            fields: () => ({
-              a: { type: GraphQLInt },
-              b: { type: GraphQLInt },
-            }),
-          })),
-        },
+        whatever: { type: new GraphQLList(GraphQLString) },
       }),
     })),
   );
 
-  expect(JSON.stringify(ExpectedType)).toEqual(JSON.stringify(ReceivedType));
+  expect(ExpectedType).toEqual(ReceivedType);
 });

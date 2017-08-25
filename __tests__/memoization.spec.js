@@ -4,7 +4,7 @@ import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString } from 'graph
 import mongooseSchemaToGraphQL, {
   generateDescriptionForSubField,
   generateNameForSubField,
-} from '../../lib/index.min';
+} from '../lib/index.min';
 
 test('memoizes created types', () => {
   const NAME = 'ExtendTestSchema';
