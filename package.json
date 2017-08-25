@@ -4,7 +4,9 @@
   "description": "Auto types generator for graphQL schema, based on your existed Mongoose schema. Check GitHub for description.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel src --presets babel-preset-es2015 --out-dir lib",
+    "build": "yarn run build:dev && yarn run build:release",
+    "build:dev": "BABEL_ENV=dev babel src/index.js --out-file lib/index.js",
+    "build:release": "BABEL_ENV=release babel src/index.js --out-file lib/index.min.js",
     "prepublish": "npm run build"
   },
   "keywords": [
