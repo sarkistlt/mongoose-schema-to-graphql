@@ -1,4 +1,18 @@
 {
-  "presets": ["es2015", "stage-0", "stage-1"],
-  "compact": true
+    "presets": [
+        "es2015",
+        "stage-0"
+    ],
+    "sourceRoot": "src",
+    "env": {
+        "dev": {
+            "compact": false,
+            "comments": true
+        },
+        "release": {
+            "compact": true,
+            "comments": false,
+            "minified": true
+        }
+    }
 }
