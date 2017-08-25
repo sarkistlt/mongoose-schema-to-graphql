@@ -2,7 +2,7 @@
   "name": "mongoose-schema-to-graphql",
   "version": "2.6.3",
   "description": "Auto types generator for graphQL schema, based on your existed Mongoose schema. Check GitHub for description.",
-  "main": "lib/index.js",
+  "main": "lib/index.min.js",
   "scripts": {
     "build": "yarn run build:dev && yarn run build:prod",
     "build:dev": "NODE_ENV=development babel src/index.js --source-maps --out-file lib/index.js",
