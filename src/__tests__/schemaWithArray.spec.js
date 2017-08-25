@@ -6,7 +6,7 @@ import mongooseSchemaToGraphQL, {
   generateNameForSubField,
 } from '../../lib/index.min';
 
-import { getRidOfThunks } from './util';
+import { getRidOfThunks } from '../../tools/util';
 
 test('generates schemas with arrays correctly', () => {
   const NAME = 'ArrayTestSchema';
@@ -52,5 +52,5 @@ test('generates schemas with arrays correctly', () => {
     })),
   );
 
-  expect(ExpectedType).toEqual(ReceivedType);
+  expect(JSON.stringify(ExpectedType)).toEqual(JSON.stringify(ReceivedType));
 });

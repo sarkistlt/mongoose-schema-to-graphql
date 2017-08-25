@@ -6,7 +6,7 @@ import mongooseSchemaToGraphQL, {
   generateNameForSubField,
 } from '../../lib/index.min';
 
-import { getRidOfThunks } from './util';
+import { getRidOfThunks } from '../../tools/util';
 
 test('excludes given fields', () => {
   const NAME = 'ExcludeTestSchema';
