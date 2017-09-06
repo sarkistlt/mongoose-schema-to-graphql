@@ -20,7 +20,7 @@ declare module 'mongoose-schema-to-graphql' {
         description?: string,
         class: ClassFieldType,
         schema: mongoose.Schema,
-        exclude?: [string],
+        exclude?: RegExp | [string],
         extend?: ExtendFieldType,
         fields?: ObjectKeyStringValueAnyType,
     };
