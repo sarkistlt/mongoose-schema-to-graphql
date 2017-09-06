@@ -29,11 +29,12 @@ test('excludes given fields', () => {
     })),
   );
 
+  const NAME2 = 'NAME2';
   expect(
     getRidOfThunks(mongooseSchemaToGraphQL({
-      name: 'BLAH',
+      name: NAME2,
       class: 'GraphQLObjectType',
-      description: 'Blah',
+      description: DESCRIPTION,
       schema: new mongoose.Schema({
         __custom: String,
         __v: String,
@@ -43,8 +44,8 @@ test('excludes given fields', () => {
     })),
   ).toEqual(
     getRidOfThunks(new GraphQLObjectType({
-      name: 'BLAH',
-      description: 'Blah',
+      name: NAME2,
+      description: DESCRIPTION,
       fields: () => ({
         _id: { type: GraphQLString },
         a: { type: GraphQLInt }
