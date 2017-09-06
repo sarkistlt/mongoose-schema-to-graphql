@@ -170,7 +170,16 @@ function createType(args) {
 
   Object
     .keys(rootSchemaPaths)
-    .filter(pathName => parsedArgs.exclude.indexOf(pathName) === -1)
+    .filter((pathName) => {
+      // If "exclude" is a Regular Expression, make sure that
+      // fields do not match that expression
+      if (parsedArgs.exclude instanceof RegExp) {
+        return !parsedArgs.exclude.test(pathName);
+      }
+
+      // Otherwise, assume "exclude" is an array of strings
+      return (parsedArgs.exclude.indexOf(pathName) === -1);
+    })
     .map((pathName) => {
       const path = rootSchemaPaths[pathName];
 

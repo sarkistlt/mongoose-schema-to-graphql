@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { GraphQLInt, GraphQLObjectType } from 'graphql';
+import { GraphQLInt, GraphQLString, GraphQLObjectType } from 'graphql';
 import mongooseSchemaToGraphQL from '../lib/index.min';
 
 import { getRidOfThunks } from '../tools/util';
@@ -27,5 +27,29 @@ test('excludes given fields', () => {
         a: { type: GraphQLInt },
       }),
     })),
+  );
+
+  const NAME2 = 'NAME2';
+  expect(
+    getRidOfThunks(mongooseSchemaToGraphQL({
+      name: NAME2,
+      class: 'GraphQLObjectType',
+      description: DESCRIPTION,
+      schema: new mongoose.Schema({
+        __custom: String,
+        __v: String,
+        a: Number,
+      }),
+      exclude: /^__/
+    })),
+  ).toEqual(
+    getRidOfThunks(new GraphQLObjectType({
+      name: NAME2,
+      description: DESCRIPTION,
+      fields: () => ({
+        _id: { type: GraphQLString },
+        a: { type: GraphQLInt }
+      })
+    }))
   );
 });
