@@ -25,5 +25,5 @@ declare module 'mongoose-schema-to-graphql' {
         fields?: ObjectKeyStringValueAnyType,
     };
 
-  export function mainFunction(config: ConfigurationObject): any;
+    export default function createType(config: ConfigurationObject): any;
 }
