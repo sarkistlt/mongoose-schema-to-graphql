@@ -1,7 +1,6 @@
 import {
   GraphQLBoolean,
   GraphQLEnumType,
-  GraphQLFloat,
   GraphQLInputObjectType,
   GraphQLInt,
   GraphQLInterfaceType,
@@ -38,13 +37,17 @@ const convertPrimitiveObjectInstanceToGraphQLType = (instanceName) => {
     case 'ObjectID':
     case 'String':
     case 'Date':
-    case 'Mixed': return GraphQLString;
+    case 'Mixed':
+      return GraphQLString;
     case 'Boolean':
-    case 'Buffer': return GraphQLBoolean;
-    case 'Number': return GraphQLInt;
-    default: throw new Error(
-      `unknown primitive object instance name: "${instanceName}"`,
-    );
+    case 'Buffer':
+      return GraphQLBoolean;
+    case 'Number':
+      return GraphQLInt;
+    default:
+      throw new Error(
+        `unknown primitive object instance name: "${instanceName}"`,
+      );
   }
 };
 
@@ -185,7 +188,12 @@ function createType(args) {
 
       // If path points to another object
       // (this is called "population" in Mongoose)
-      if (path.caster && path.caster.options && path.caster.options.ref) {
+      if (
+        path.caster &&
+        path.caster.options &&
+        path.caster.options.ref &&
+        getFromMemory(path.caster.options.ref)
+      ) {
         // Get the type of the pointer
         const refTypeName = path.caster.options.ref;
 
@@ -308,7 +316,6 @@ but was specified as population reference.
 
   // Memoize
   memoize(parsedArgs.name, resultingGraphQLType);
-
   return resultingGraphQLType;
 }
 
