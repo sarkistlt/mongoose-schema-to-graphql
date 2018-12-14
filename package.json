@@ -1,14 +1,13 @@
 {
-  "name": "mongoose-schema-to-graphql",
-  "version": "2.7.2",
+  "name": "mongoose-to-graphql",
+  "version": "1.0.0",
   "description": "Auto types generator for graphQL schema, based on your existed Mongoose schema. Check GitHub for description.",
   "main": "lib/index.min.js",
   "scripts": {
     "build": "npm run build:dev && npm run build:prod",
     "build:dev": "NODE_ENV=development babel src/index.js --source-maps --out-file lib/index.js",
     "build:prod": "NODE_ENV=production babel src/index.js --out-file lib/index.min.js",
-    "test": "npm run build && jest",
-    "prepublish": "npm run test"
+    "test": "npm run build && jest"
   },
   "keywords": [
     "mongo",
