@@ -5,3 +5,4 @@ node_modules
 /public/bundles/
 .babelrc
 /yarn.lock
+package-lock.json
