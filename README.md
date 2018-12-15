@@ -1,3 +1,7 @@
+[![License](https://img.shields.io/npm/l/mongoose-schema-to-graphql.svg)](https://www.npmjs.com/package/mongoose-schema-to-graphql)
+[![NPM](https://img.shields.io/npm/v/mongoose-schema-to-graphql.svg)](https://www.npmjs.com/package/mongoose-schema-to-graphql)
+[![Build Status](https://travis-ci.org/sarkistlt/mongoose-schema-to-graphql.svg?branch=master)](https://travis-ci.org/sarkistlt/mongoose-schema-to-graphql)
+
 ## Use your existed Mongoose schema to generate graphQL types.
 #### Date fields supported, they get serialized to ISO date string
 #### Full support of all graphQL "Definitions" and "Scalars" besides "GraphQLFloat", because in Mongoose schema you can use only int. numbers. But you can use ```extend``` property to pass it, details below. 
@@ -8,20 +12,20 @@ If you already have Mongoose schema that's enough to generate graphQL type.
 ### How it works.
 First:
 ~~~shell
-npm i mongoose-schema-to-graphql-object
+npm i -S mongoose-schema-to-graphql
 ~~~
 
 or
 
 ~~~shell
-yarn add mongoose-schema-to-graphql-object
+yarn add mongoose-schema-to-graphql
 ~~~
 
-Make sure that your ```graphql``` package is the same version as used in ```mongoose-schema-to-graphql-object``` or vice versa.
+Make sure that your ```graphql``` package is the same version as used in ```mongoose-schema-to-graphql``` or vice versa.
 
 Then:
 ~~~js
-import createType from 'mongoose-schema-to-graphql-object';
+import createType from 'mongoose-schema-to-graphql';
 ~~~
 
 `createType` function accept obj as argument with following structure:
@@ -60,7 +64,7 @@ export const couponSchema = mongoose.Schema({
 ~~~
 
 ~~~js
-import createType from 'mongoose-schema-to-graphql-object';
+import createType from 'mongoose-schema-to-graphql';
 import { couponSchema } from './dbSchemas';
 
 const config = {
@@ -126,7 +130,7 @@ export const customerSchema = mongoose.Schema({
 
 Then: 
 ~~~js
-import createType from 'mongoose-schema-to-graphql-object';
+import createType from 'mongoose-schema-to-graphql';
 import { customerSchema } from './dbSchemas';
 
 const config = {
@@ -183,7 +187,7 @@ export default new GraphQLObjectType({
 You can use this field to pass some additional extend. to graphQL type, for example:
 ~~~js
 import { GraphQLFloat } from 'graphql';
-import createType from 'mongoose-schema-to-graphql-object';
+import createType from 'mongoose-schema-to-graphql';
 import { customerSchema } from './dbSchemas';
 
 const config = {
