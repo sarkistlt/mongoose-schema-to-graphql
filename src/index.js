@@ -8,6 +8,7 @@ import {
   GraphQLObjectType,
   GraphQLString,
   GraphQLUnionType,
+  GraphQLID,
 } from 'graphql';
 import {
   GraphQLDateTime
@@ -18,7 +19,8 @@ const possibleGraphQLClasses = {
   GraphQLInterfaceType,
   GraphQLUnionType,
   GraphQLEnumType,
-  GraphQLDateTime
+  GraphQLDateTime,
+  GraphQLID,
 };
 
 /**
@@ -38,6 +40,7 @@ export const generateDescriptionForSubField = (rootTypeName, subFieldKeyName) =>
 const convertPrimitiveObjectInstanceToGraphQLType = (instanceName) => {
   switch (instanceName) {
     case 'ObjectID':
+      return GraphQLID;
     case 'String':
     case 'Mixed':
       return GraphQLString;
