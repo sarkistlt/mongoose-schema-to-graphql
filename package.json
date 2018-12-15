@@ -1,6 +1,6 @@
 {
   "name": "mongoose-schema-to-graphql-object",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Auto types generator for graphQL schema, based on your existed Mongoose schema. Check GitHub for description.",
   "main": "lib/index.min.js",
   "scripts": {
