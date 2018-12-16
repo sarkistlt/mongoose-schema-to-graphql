@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { GraphQLInt, GraphQLString, GraphQLObjectType } from 'graphql';
+import { GraphQLID, GraphQLInt, GraphQLObjectType } from 'graphql';
 import mongooseSchemaToGraphQL from '../lib/index.min';
 
 import { getRidOfThunks } from '../tools/util';
@@ -40,16 +40,16 @@ test('excludes given fields', () => {
         __v: String,
         a: Number,
       }),
-      exclude: /^__/
+      exclude: /^__/,
     })),
   ).toEqual(
     getRidOfThunks(new GraphQLObjectType({
       name: NAME2,
       description: DESCRIPTION,
       fields: () => ({
-        _id: { type: GraphQLString },
-        a: { type: GraphQLInt }
-      })
-    }))
+        _id: { type: GraphQLID },
+        a: { type: GraphQLInt },
+      }),
+    })),
   );
 });
