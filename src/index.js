@@ -8,14 +8,19 @@ import {
   GraphQLObjectType,
   GraphQLString,
   GraphQLUnionType,
+  GraphQLID,
 } from 'graphql';
-
+import {
+  GraphQLDateTime
+} from 'graphql-iso-date';
 const possibleGraphQLClasses = {
   GraphQLObjectType,
   GraphQLInputObjectType,
   GraphQLInterfaceType,
   GraphQLUnionType,
   GraphQLEnumType,
+  GraphQLDateTime,
+  GraphQLID,
 };
 
 /**
@@ -35,10 +40,12 @@ export const generateDescriptionForSubField = (rootTypeName, subFieldKeyName) =>
 const convertPrimitiveObjectInstanceToGraphQLType = (instanceName) => {
   switch (instanceName) {
     case 'ObjectID':
+      return GraphQLID;
     case 'String':
-    case 'Date':
     case 'Mixed':
       return GraphQLString;
+    case 'Date':
+      return GraphQLDateTime;
     case 'Boolean':
     case 'Buffer':
       return GraphQLBoolean;
@@ -148,7 +155,7 @@ function createType(args) {
     const oldFields = resultingGraphQLOptions.fields;
     resultingGraphQLOptions.fields = () => Object.assign(
       {},
-      oldFields(),
+      oldFields(), 
       { [key]: val },
     );
   };

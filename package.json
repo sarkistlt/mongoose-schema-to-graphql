@@ -84,5 +84,8 @@
   "jest": {
     "verbose": true,
     "testEnvironment": "node"
+  },
+  "dependencies": {
+    "graphql-iso-date": "^3.6.1"
   }
 }
