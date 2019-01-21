@@ -11,8 +11,9 @@ import {
   GraphQLID,
 } from 'graphql';
 import {
-  GraphQLDateTime
+  GraphQLDateTime,
 } from 'graphql-iso-date';
+
 const possibleGraphQLClasses = {
   GraphQLObjectType,
   GraphQLInputObjectType,
@@ -155,7 +156,7 @@ function createType(args) {
     const oldFields = resultingGraphQLOptions.fields;
     resultingGraphQLOptions.fields = () => Object.assign(
       {},
-      oldFields(), 
+      oldFields(),
       { [key]: val },
     );
   };
