@@ -7,7 +7,8 @@ declare module 'mongoose-schema-to-graphql' {
         'GraphQLInputObjectType' |
         'GraphQLInterfaceType' |
         'GraphQLUnionType' |
-        'GraphQLEnumType';
+        'GraphQLEnumType' |
+        'string';
 
     type ThunkType = () => { [key: string]: any };
 
